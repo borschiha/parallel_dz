@@ -8,6 +8,8 @@ namespace parallel_dz
     {
         static void Main(string[] args)
         {
+            DatabaseManager.InitializeDatabase();
+
             Console.WriteLine("Choose files : \n1 - .txt\n2 - SQLite");
             string choice = Console.ReadLine();
 
@@ -36,16 +38,16 @@ namespace parallel_dz
 
             else if (choice == "2")
             {
-                Console.WriteLine("Write path to SQLite DataBase: ");
-                string dbpath = Console.ReadLine();
+                string dbpath = DatabaseManager.GetDbPath();
 
+                // Проверяем, что файл действительно существует, прежде чем подключаться
                 if (!File.Exists(dbpath))
                 {
-                    Console.WriteLine("No Such Directory");
+                    Console.WriteLine("База данных не найдена. Убедитесь, что она была создана.");
                     return;
                 }
 
-                using var connection = new SqliteConnection($"Data Source = {dbpath}");
+                using var connection = new SqliteConnection($"Data Source = users_db.db");
                 connection.Open();
 
                 var command = connection.CreateCommand();
